@@ -1,0 +1,7 @@
+{% if musica_line %}
+    {% for musica in musica_line %}
+        <ul>${{musica.arduino_id}}</ul> 
+    {% endfor %}
+{% else %}
+    <ul>$xxxx</ul>
+{% endif %}
