@@ -16,79 +16,83 @@
 		    <!-- Header -->
 		    <div id="header">
 		        <div id="branding">   
-					<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
-		        </div>     
-		        <div id="user-tools">Página de 
-		        	<a href="/admin/">Usuário</a>                    
+					<h1 id="site-name"><a href="/autofalante/home">Autofalante!</a></h1>
 		        </div>        
 		    </div>
 		</div>    
     	<!-- END Header -->
 
 		<div id="content" class="colMS">  
-
+			{% if user.is_authenticated %}
 			<div id="content-main">
+
 		        <div class="app-autofalante module">
 			        <table>
-				        <caption><a href="/admin/auth/" class="section" title="Modelos na aplicação Autenticação e Autorização">{{ playlist.playlist_title}}</a>
+				        <caption>
+				        	{{ playlist.playlist_title}}
 				        </caption>
-				        {% if musicas_playlist %}
-			            <tbody>             
+			            <tbody>
+			            	{% if musicas_playlist %}             
 			    			<tr class="model-group"> 
-							<th scope="row">Título</th>
-							<th scope="row">Artista</th>
-							<th scope="row">Álbum</th>
-							<td><a href="/admin/auth/user/add/" class="addlink"></a></td> 
-							<td><a href="/admin/auth/user/add/" class="addlink"></a></td> 
-							</tr>
+								<th scope="row">Título</th>
+								<th scope="row">Artista</th>
+								<th scope="row">Álbum</th>
+							</tr>	
 							{% for musica in musicas_playlist %}
 				        	<tr>
-				    		<td>{{ musica.song_title }}</td>
-				    		<td>{{ musica.song_interpret }}</td>
-				    		<td>{{ musica.song_album }}</td>
-				    		<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Executar</a></td>
-		    				<td><a href="{% url 'autofalante:sendLine' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
+				    			<td>{{ musica.song_title }}</td>
+				    			<td>{{ musica.song_interpret }}</td>
+				    			<td>{{ musica.song_album }}</td>
+				    			<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Executar</a></td>
+		    					<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
 		    				</tr>
-				    		{% endfor %}                                   
+				    		{% endfor %}
+							{% else %}
+							<tr>
+			    				<th scope="row">Não há músicas</th>
+			    				<td></td>  
+			            	</tr>  
+							{% endif %}                                   
 			        	</tbody>
 			        </table>
-		        </div>        
+		        </div>
+
 		    </div>
 		
 			<div id="content-related">
+
 				<div class="app-autofalante module">
-			    	<table align="center">
-						<caption><a href="/admin/auth/" class="section" title="Modelos na aplicação Autenticação e Autorização">Comandos</a>
+			    	<table align="left">
+						<caption>
+							Comandos
 						</caption>
+						<col width=150>
+						<col width=150>
+						<col width=150>
 						<tbody>
 							<tr>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9999 %}">Next</a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}">Previous</a></td>
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9999 %}">Próxima</a></td>
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9998 %}">Anterior</a></td>
 							</tr>
 							<tr>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9997 %}">Volume +</a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9996 %}">Volume -</a></td>			
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9997 %}">Volume +</a></td>
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9996 %}">Volume -</a></td>			
 							</tr>
 							<tr>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9995 %}">Pause</a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9994 %}">Play</a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
-								<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=9998 %}"></a></td>
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9995 %}">Pause</a></td>
+								<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=9994 %}">Play</a></td>
 							</tr>
 						</tbody>
 					</table>
-					<table>
-					{% else %}
-			   		<p>Não há músicas</p>
-					{% endif %}
-					</table>
 				</div>
 			</div>
+		{% else %}
+			<div id="content-main">
+		        <div class="app-auth module">
+		    		<h1>Você não fez login</h1>
+		    		<h2>Faça login <a href="{% url 'autofalante:login' %}">aqui</a></h2>	
+		    	</div>
+		{% endif %}	
+		</div>
 	</body>
 </html>
