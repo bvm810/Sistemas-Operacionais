@@ -1,6 +1,12 @@
 {% extends 'autofalante/base.html' %}  
 
-{% block header %}<h1 id="site-name"><a href="/autofalante/home">Autofalante!</a></h1>{% endblock %}
+{% block header %}
+{% if user.is_authenticated %}
+<h1 id="site-name"><a href="/autofalante/home">Autofalante!</a></h1>
+{% else %}
+<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
+{% endif %}
+{% endblock %}
 
 {% block content-main %}
 {% if user.is_authenticated %}

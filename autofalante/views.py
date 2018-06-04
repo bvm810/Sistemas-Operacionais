@@ -50,7 +50,7 @@ def detail(request, playlist_id, load):
     playlist = Playlist.objects.get(id = playlist_id)
     musicas_playlist = playlist.musica_set.all()
     fila = Musica.objects.all()
-    if (load == 1):
+    if (load and musicas_playlist):
         song = musicas_playlist[0]
         song.execute = True
         song.save()
