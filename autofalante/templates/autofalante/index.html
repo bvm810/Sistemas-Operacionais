@@ -1,77 +1,51 @@
-<!DOCTYPE html>
-<html>
+{% extends 'autofalante/base.html' %}
+  
+{% block header %}<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>{% endblock %}
 
-	<head>
-		<title>Home Autofalante</title>
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css">
-  		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
-  		<meta name="robots" content="NONE,NOARCHIVE">
-	</head>
+{% block content-main %}      
+<div class="app-autofalante module">
+    <table>
+	    <caption>
+    	    Suas Músicas
+    	</caption>
+		<tbody>                     
+		{% if songs %} 
+			<tr class="model-group"> 
+				<th scope="row">Título</th>
+				<th scope="row">Artista</th>
+				<th scope="row">Álbum</th>
+			</tr>
+			{% for musica in songs %}
+	       		<tr>
+	    			<td>{{ musica.song_title }}</td>
+	    			<td>{{ musica.song_interpret }}</td>
+	    			<td>{{ musica.song_album }}</td>
+	    			<td><a href="{% url 'autofalante:sendLineIndex' musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
+	   			</tr>
+	   		{% endfor %}
+		{% else %}
+			<tr>
+  				<th scope="row">Não há músicas</th>
+   				<td></td>  
+      		</tr>  
+		{% endif %}
+		</tbody>
+  	</table>
+</div>
+{% endblock %}
 
-	<body class=" dashboard" data-admin-utc-offset="-10800">
-
-		<!-- Container -->
-		<div id="container">  
-		    <!-- Header -->
-		    <div id="header">
-		        <div id="branding">   
-					<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
-		        </div>        
-		    </div>
-		</div>    
-    	<!-- END Header -->
-
-		<div id="content" class="colMS">  
-			<div id="content-main">		       
-				<div class="app-autofalante module">
-				    <table>
-					    <caption>
-				    	    Suas Músicas
-				    	</caption>
-						<tbody>                     
-							{% if songs %} 
-							<tr class="model-group"> 
-								<th scope="row">Título</th>
-								<th scope="row">Artista</th>
-								<th scope="row">Álbum</th>
-							</tr>
-							{% for musica in songs %}
-				       		<tr>
-				    			<td>{{ musica.song_title }}</td>
-				    			<td>{{ musica.song_interpret }}</td>
-				    			<td>{{ musica.song_album }}</td>
-				    			<td><a href="{% url 'autofalante:sendLineIndex' musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
-			    			</tr>
-			    			{% endfor %}
-							{% else %}
-							<tr>
-			   					<th scope="row">Não há músicas</th>
-			   					<td></td>  
-			           		</tr>  
-							{% endif %}
-			    		</tbody>
-			   		</table>
-		    	</div>
-		    </div>
-		    
-		    <div id="content-related">
-		    	<div class="app-autofalante module">
-		    		<table align="left">
-		    			<caption>
-		    			Mais recursos?
-		    			</caption>
-		    			<col width="300">
-		    			<tbody>
-		    				<th>
-		    					Faça login <a href="{% url 'autofalante:login' %}">aqui</a>
-		    				</th>
-		    			</tbody>
-		    		</table>	
-		    	</div>
-		    </div>
-
-		</div>		
-	</body>
-</html>
+{% block content-related %}		    
+ <div class="app-autofalante module">
+   	<table align="left">
+   		<caption>
+   			Mais recursos?
+   		</caption>
+   		<col width="300">
+   		<tbody>
+   			<th>
+   				Faça login <a href="{% url 'autofalante:login' %}">aqui</a>
+   			</th>
+   		</tbody>
+   	</table>	
+</div>
+{% endblock %}

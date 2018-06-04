@@ -1,39 +1,14 @@
-<!DOCTYPE html>
-<html>
+{% extends 'autofalante/base.html' %}  
 
-	<head>
-		<title>Home Autofalante</title>
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/dashboard.css">
-  		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  		<link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
-  		<meta name="robots" content="NONE,NOARCHIVE">
-	</head>
+{% block header %}<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>{% endblock %}
 
-	<body class=" dashboard" data-admin-utc-offset="-10800">
-		<!-- Container -->
-		<div id="container">  
-		    <!-- Header -->
-		    <div id="header">
-		        <div id="branding">   
-					<h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
-		        </div>     
-		    </div>
-		</div>    
-    	<!-- END Header -->
-
-		<div id="content" class="colMS">  
-
-			<div id="content-main">
-		        <div class="app-autofalante module">
-					<h2>Login</h2>
-					<form method="post">
-  						{% csrf_token %}
-  						{{ form.as_p }}
-  						<button type="submit">Login</button>
-					</form>	    
-		        </div>        
-		    </div>
-		</div>
-	</body>
-</html>
+{% block content-main %}
+<div class="app-autofalante module">
+	<h2>Login</h2>
+	<form method="post">
+  		{% csrf_token %}
+  		{{ form.as_p }}
+  		<button type="submit">Login</button>
+	</form>	    
+</div>
+{% endblock %}
