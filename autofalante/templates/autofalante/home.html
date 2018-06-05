@@ -2,7 +2,7 @@
 
 {% block header %}
 {% if user.is_authenticated %}
-<h1 id="site-name"><a href="/autofalante/home">Autofalante!</a></h1>
+<h1 id="site-name"><a href="/autofalante/home">Home | Autofalante!</a></h1>
 {% else %}
 <h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
 {% endif %}
@@ -31,6 +31,20 @@
 		{% endif %}                                       
        	</tbody>
     </table>
+</div>
+
+<div class="module filtered">
+	<h2 style="margin-bottom: 10px;">GERENCIAMENTO DE PLAYLISTS</h2>
+	<form method="post">
+  		{% csrf_token %}
+  		{{ creation_form }}
+  		<input style="margin-left:300px;" type="submit" name="create" value="Criar!"/>
+	</form>
+	<form method="post">
+  		{% csrf_token %}
+  		{{ deletion_form }}
+  		<input style="margin-left:290px;" type="submit" name="delete" value="Apagar!"/>
+	</form>
 </div>
 
 <div class="app-autofalante module">
@@ -69,7 +83,8 @@
 	<h1>Você não fez login</h1>
 	<h2>Faça login <a href="{% url 'autofalante:login' %}">aqui</a></h2>	
 </div>
-{% endif %}      
+{% endif %}
+
 {% endblock %}
 
 {% block content-related %}
@@ -96,7 +111,7 @@
 			</tr>
 		</tbody>
 	</table>
-</div>
+</div>		    
 
 <div class="app-autofalante module">
 	<table align="left">

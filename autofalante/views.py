@@ -3,24 +3,18 @@ Funções que chamam as páginas HTMLs a serem carregadas
 """
 
 from django.shortcuts import render
+from django.utils import timezone
 from django.http import HttpResponse
 from django.template import loader
 from .models import Playlist, Musica
+from .forms import PlaylistCreationForm, PlaylistDeletionForm
 
 COMMANDS_PLAYLIST_ID = 6
+ALL_SONGS_PLAYLIST_ID = 1
 LOAD_ARDUINO_ID = 9992
 
 def index(request):
-    musicas = Musica.objects.exclude(playlist = COMMANDS_PLAYLIST_ID)
-    songs = []
-    for musica in musicas:
-        if (Musica.objects.filter(arduino_id = musica.arduino_id).count()==1):
-            s = Musica.objects.get(arduino_id = musica.arduino_id)
-            songs.append(s)
-        else:
-            s = Musica.objects.filter(arduino_id = musica.arduino_id)[0]
-            if (s.arduino_id != songs[len(songs)-1].arduino_id):
-                songs.append(s)            
+    songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)            
     template = loader.get_template('autofalante/index.html')
     context = {
         'songs': songs,
@@ -28,21 +22,31 @@ def index(request):
     return render(request,'autofalante/index.html',context)
 
 def home(request):
-    created_playlists = Playlist.objects.exclude(id = COMMANDS_PLAYLIST_ID)
-    musicas = Musica.objects.exclude(playlist = COMMANDS_PLAYLIST_ID)
-    songs = []
-    for musica in musicas:
-        if (Musica.objects.filter(arduino_id = musica.arduino_id).count()==1):
-            s = Musica.objects.get(arduino_id = musica.arduino_id)
-            songs.append(s)
-        else:
-            s = Musica.objects.filter(arduino_id = musica.arduino_id)[0]
-            if (s.arduino_id != songs[len(songs)-1].arduino_id):
-                songs.append(s)            
+    created_playlists = Playlist.objects.exclude(id = COMMANDS_PLAYLIST_ID).exclude(id = ALL_SONGS_PLAYLIST_ID)
+    songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
+    if (request.method == 'POST' and 'create' in request.POST):
+        creation_form = PlaylistCreationForm(request.POST)
+        deletion_form = PlaylistDeletionForm()
+        if (creation_form.is_valid()):
+            new_playlist = Playlist(playlist_title = creation_form.cleaned_data['playlist_name'], creation_date = timezone.now())
+            new_playlist.save()
+            creation_form = PlaylistCreationForm()
+    elif(request.method == 'POST' and 'delete' in request.POST):    
+        deletion_form = PlaylistDeletionForm(request.POST)
+        creation_form = PlaylistCreationForm()
+        if (deletion_form.is_valid()):
+            deleted_playlist = Playlist.objects.get(playlist_title = deletion_form.cleaned_data['playlist_name'])
+            deleted_playlist.delete()
+            deletion_form = PlaylistDeletionForm()
+    else:
+        creation_form = PlaylistCreationForm()
+        deletion_form = PlaylistDeletionForm()            
     template = loader.get_template('autofalante/home.html')
     context = {
         'created_playlists': created_playlists,
         'songs': songs,
+        'creation_form': creation_form,
+        'deletion_form': deletion_form,
     }
     return render(request,'autofalante/home.html',context)
 
@@ -63,10 +67,14 @@ def detail(request, playlist_id, load):
         for musica in musicas_playlist[1:]:
             musica.in_line = True
             musica.save()
+    other_songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
+    for s in musicas_playlist:
+        other_songs = other_songs.exclude(arduino_id = s.arduino_id)                       
     template = loader.get_template('autofalante/detail.html')
     context = {
         'musicas_playlist': musicas_playlist,
         'playlist': playlist,
+        'other_songs': other_songs,
     }
     return render(request,'autofalante/detail.html',context)
 
@@ -106,7 +114,11 @@ def sendLineHome(request, playlist_id, musica_arduino_id):
     if (playlist_id == 0):
         return home(request)
     else:    
-        return detail(request,playlist_id,0)        
+        return detail(request,playlist_id,0)
+
+def addSongPlaylist(request, playlist, musica_arduino_id):
+    added_song = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
+    added_song = playlist.musica_set.all()
 
 def getCommand(request):
     musica_line = Musica.objects.filter(execute = True).order_by('modified_at')

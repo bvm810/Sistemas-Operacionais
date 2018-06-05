@@ -10,6 +10,7 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('home/<int:playlist_id>/<int:load>/', views.detail, name='detail'),
     path('home/fila/<int:playlist_id>/<int:musica_arduino_id>/', views.sendLineHome, name='sendLineHome'),
+    path('home/add/<int:playlist_id>/<int:musica_arduino_id>/', views.addSongPlaylist, name='addSongPlaylist'),
     path('fila/<int:musica_arduino_id>/', views.sendLineIndex, name='sendLineIndex'),
     path('home/comandos/<int:playlist_id>/<int:musica_arduino_id>/', views.sendCommand, name='sendCommand'),
     path('esp/fila/', views.getLine, name='getLine'),

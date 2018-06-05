@@ -2,7 +2,7 @@
 
 {% block header %}
 {% if user.is_authenticated %}
-<h1 id="site-name"><a href="/autofalante/home">Autofalante!</a></h1>
+<h1 id="site-name"><a href="/autofalante/home">{{playlist.playlist_title}} | Autofalante!</a></h1>
 {% else %}
 <h1 id="site-name"><a href="/autofalante/">Autofalante!</a></h1>
 {% endif %}
@@ -10,6 +10,7 @@
 
 {% block content-main %}
 {% if user.is_authenticated %}
+
 <div class="app-autofalante module">
 	<table>
 		<caption>
@@ -29,15 +30,48 @@
 		   			<td>{{ musica.song_album }}</td>
 		   			<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Executar</a></td>
 		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
+		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Remover</a></td>
 		    	</tr>
 			{% endfor %}
 		{% else %}
 			<tr>
-				<th scope="row">Não há músicas</th>
+				<th scope="row">Não há músicas nessa playlist</th>
 				<td></td>  
 		   	</tr>  
 		{% endif %}                                   
 		</tbody>
+	</table>
+</div>
+
+<div class="app-autofalante module">
+	<table>
+	    <caption>
+	        Outras Músicas
+	    </caption>
+		<tbody>                     
+		{% if other_songs %} 
+			<tr class="model-group"> 
+				<th scope="row">Título</th>
+				<th scope="row">Artista</th>
+				<th scope="row">Álbum</th>
+			</tr>
+			{% for musica in other_songs %}
+	        	<tr>
+	    			<td>{{ musica.song_title }}</td>
+	    			<td>{{ musica.song_interpret }}</td>
+	    			<td>{{ musica.song_album }}</td>
+	    			<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=musica.arduino_id %}">Executar</a></td>
+	    			<td><a href="{% url 'autofalante:sendLineHome' playlist_id=0 musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
+		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Adicionar</a></td>
+	    		</tr>
+	   		{% endfor %}
+		{% else %}
+			<tr>
+				<th scope="row">Não há músicas fora dessa playlist</th>
+				<td></td>  
+	      	</tr>  
+		{% endif %}
+	   	</tbody>
 	</table>
 </div>
 
