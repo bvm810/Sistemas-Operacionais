@@ -22,7 +22,7 @@ def index(request):
     return render(request,'autofalante/index.html',context)
 
 def home(request):
-    created_playlists = Playlist.objects.exclude(id = COMMANDS_PLAYLIST_ID).exclude(id = ALL_SONGS_PLAYLIST_ID)
+    created_playlists = Playlist.objects.exclude(id = COMMANDS_PLAYLIST_ID).exclude(id = ALL_SONGS_PLAYLIST_ID).order_by('playlist_title')
     songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
     if (request.method == 'POST' and 'create' in request.POST):
         creation_form = PlaylistCreationForm(request.POST)
@@ -116,9 +116,25 @@ def sendLineHome(request, playlist_id, musica_arduino_id):
     else:    
         return detail(request,playlist_id,0)
 
-def addSongPlaylist(request, playlist, musica_arduino_id):
-    added_song = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
-    added_song = playlist.musica_set.all()
+def addSongPlaylist(request, playlist_id, musica_arduino_id):
+    added_song = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID).get(arduino_id = musica_arduino_id)
+    s = Musica(
+        playlist = Playlist.objects.get(id = playlist_id),
+        execute = 0,
+        in_line = 0,
+        modified_at = added_song.modified_at,
+        arduino_id = added_song.arduino_id,
+        song_title = added_song.song_title,
+        song_interpret = added_song.song_interpret,
+        song_album = added_song.song_album 
+        )
+    s.save()
+    return detail(request, playlist_id, 0)
+
+def removeSongPlaylist(request, playlist_id, musica_arduino_id):
+    removed_song = Musica.objects.filter(playlist = playlist_id).get(arduino_id = musica_arduino_id)
+    removed_song.delete()
+    return detail(request, playlist_id, 0)
 
 def getCommand(request):
     musica_line = Musica.objects.filter(execute = True).order_by('modified_at')

@@ -1,5 +1,7 @@
 {% extends 'autofalante/base.html' %}  
 
+{% block name %}Home | Autofalante!{% endblock %}
+
 {% block header %}
 {% if user.is_authenticated %}
 <h1 id="site-name"><a href="/autofalante/home">Home | Autofalante!</a></h1>

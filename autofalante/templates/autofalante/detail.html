@@ -1,5 +1,7 @@
 {% extends 'autofalante/base.html' %}  
 
+{% block name %}{{playlist.playlist_title}} | Autofalante!{% endblock %}
+
 {% block header %}
 {% if user.is_authenticated %}
 <h1 id="site-name"><a href="/autofalante/home">{{playlist.playlist_title}} | Autofalante!</a></h1>
@@ -30,7 +32,7 @@
 		   			<td>{{ musica.song_album }}</td>
 		   			<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Executar</a></td>
 		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
-		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Remover</a></td>
+		    		<td><a href="{% url 'autofalante:removeSongPlaylist' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Remover</a></td>
 		    	</tr>
 			{% endfor %}
 		{% else %}
@@ -60,9 +62,9 @@
 	    			<td>{{ musica.song_title }}</td>
 	    			<td>{{ musica.song_interpret }}</td>
 	    			<td>{{ musica.song_album }}</td>
-	    			<td><a href="{% url 'autofalante:sendCommand' playlist_id=0 musica_arduino_id=musica.arduino_id %}">Executar</a></td>
-	    			<td><a href="{% url 'autofalante:sendLineHome' playlist_id=0 musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
-		    		<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Adicionar</a></td>
+	    			<td><a href="{% url 'autofalante:sendCommand' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Executar</a></td>
+	    			<td><a href="{% url 'autofalante:sendLineHome' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Por na Fila</a></td>
+		    		<td><a href="{% url 'autofalante:addSongPlaylist' playlist_id=playlist.id musica_arduino_id=musica.arduino_id %}">Adicionar</a></td>
 	    		</tr>
 	   		{% endfor %}
 		{% else %}
