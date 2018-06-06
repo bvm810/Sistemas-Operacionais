@@ -40,12 +40,17 @@
 	<form method="post">
   		{% csrf_token %}
   		{{ creation_form }}
-  		<input style="margin-left:300px;" type="submit" name="create" value="Criar!"/>
+  		<input style="margin-left:257px;" type="submit" name="create" value="Criar Playlist"/>
 	</form>
 	<form method="post">
   		{% csrf_token %}
   		{{ deletion_form }}
-  		<input style="margin-left:290px;" type="submit" name="delete" value="Apagar!"/>
+  		<input style="margin-left:245px;" type="submit" name="delete" value="Apagar Playlist"/>
+	</form>
+	<form method="post">
+  		{% csrf_token %}
+  		{{ sharing_form }}
+  		<input style="margin-left:5px;" type="submit" name="share" value="Compartilhar"/>
 	</form>
 </div>
 

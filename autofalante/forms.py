@@ -4,7 +4,7 @@ from .models import Playlist, Musica, Listener
 from django.contrib.auth.models import User
 
 class PlaylistCreationForm(forms.Form):
-	playlist_name = forms.CharField(label = 'Título', max_length = 200)
+	playlist_name = forms.CharField(label = 'Nome', max_length = 200)
 
 	def clean_playlist_name(self):
 		data = self.cleaned_data['playlist_name']
@@ -16,7 +16,7 @@ class PlaylistCreationForm(forms.Form):
 
 
 class PlaylistDeletionForm(forms.Form):
-	playlist_name = forms.CharField(label = 'Título', max_length = 200)
+	playlist_name = forms.CharField(label = 'Nome', max_length = 200)
 	username = forms.CharField(max_length = 200, widget = forms.HiddenInput())
 
 	def __init__(self, *args, **kwargs):
@@ -27,12 +27,38 @@ class PlaylistDeletionForm(forms.Form):
 	def clean_playlist_name(self):
 		data = self.cleaned_data['playlist_name']
 		user = self.fields['username'].initial
-		print(user)
-
-		if (Playlist.objects.filter(playlist_title = data).count()==0):
-			raise ValidationError('Playlist inexistente')
 
 		if(User.objects.get(username = user).listener.playlists.filter(playlist_title = data).count()==0):
-			raise ValidationError('Playlist não pertence ao usuário')
+			raise ValidationError('Playlist inexistente ou não pertence ao usuário')
 
-		return data		
+		return data
+
+class PlaylistSharingForm(forms.Form):
+	playlist_name = forms.CharField(label = 'Playlist', max_length = 200)
+	shared_user = forms.CharField(label = 'Usuário', max_length = 200)
+	original_user = forms.CharField(max_length = 200, widget = forms.HiddenInput())		
+
+	def __init__(self, *args, **kwargs):
+		self.request = kwargs.pop("request")
+		super(PlaylistSharingForm, self).__init__(*args,**kwargs)
+		self.fields['original_user'].initial = self.request.user.username
+
+	def clean_shared_user(self):
+		data = self.cleaned_data['shared_user']
+
+		if(User.objects.filter(username = data).count()==0):
+			raise ValidationError('Usuário inexistente')
+
+		return data 
+
+	def clean_playlist_name(self):
+		data = self.cleaned_data['playlist_name']
+		user = self.fields['original_user'].initial
+
+		if(User.objects.get(username = user).listener.playlists.filter(playlist_title = data).count()==0):
+			raise ValidationError('Playlist inexistente ou não pertence ao usuário')
+
+		return data	
+
+
+
