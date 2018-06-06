@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template import loader
-from .models import Playlist, Musica
+from django.contrib.auth.models import User
+from .models import Playlist, Musica, Listener
 from .forms import PlaylistCreationForm, PlaylistDeletionForm
 
 COMMANDS_PLAYLIST_ID = 6
@@ -22,14 +23,22 @@ def index(request):
     return render(request,'autofalante/index.html',context)
 
 def home(request):
-    created_playlists = Playlist.objects.exclude(id = COMMANDS_PLAYLIST_ID).exclude(id = ALL_SONGS_PLAYLIST_ID).order_by('playlist_title')
+    if (request.user.is_authenticated):
+        u = User.objects.get(username = request.user.username)
+        owned_playlists = u.listener.playlists.all().order_by('playlist_title')
+    else:
+        owned_playlists = []    
     songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
     if (request.method == 'POST' and 'create' in request.POST):
         creation_form = PlaylistCreationForm(request.POST)
         deletion_form = PlaylistDeletionForm()
         if (creation_form.is_valid()):
-            new_playlist = Playlist(playlist_title = creation_form.cleaned_data['playlist_name'], creation_date = timezone.now())
+            new_playlist = Playlist(
+                playlist_title = creation_form.cleaned_data['playlist_name'],
+                creation_date = timezone.now(),
+            )    
             new_playlist.save()
+            u.listener.playlists.add(new_playlist)
             creation_form = PlaylistCreationForm()
     elif(request.method == 'POST' and 'delete' in request.POST):    
         deletion_form = PlaylistDeletionForm(request.POST)
@@ -43,7 +52,7 @@ def home(request):
         deletion_form = PlaylistDeletionForm()            
     template = loader.get_template('autofalante/home.html')
     context = {
-        'created_playlists': created_playlists,
+        'owned_playlists': owned_playlists,
         'songs': songs,
         'creation_form': creation_form,
         'deletion_form': deletion_form,

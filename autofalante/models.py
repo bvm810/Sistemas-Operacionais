@@ -4,6 +4,7 @@ Arquivo com os modelos de dados usandos no BD
 
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Playlist(models.Model):
 	#Classe contendo modelo para a playlist com título e data 
@@ -27,5 +28,9 @@ class Musica(models.Model):
 	song_album = models.CharField('álbum', max_length = 200)	
 	def __str__(self):
 		return self.song_title
+
+class Listener(models.Model):
+	user = models.OneToOneField(User, on_delete = models.CASCADE)
+	playlists = models.ManyToManyField(Playlist)
 
 

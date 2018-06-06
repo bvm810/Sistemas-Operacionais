@@ -18,8 +18,8 @@
         	Suas Playlists
         </caption>        
         <tbody>             
-       	{% if created_playlists %}
-    			{% for playlist in created_playlists %}
+       	{% if owned_playlists %}
+    			{% for playlist in owned_playlists %}
 					<tr class="model-group"> 
 				    	<th scope="row"><a href="{% url 'autofalante:detail' playlist_id=playlist.id load=1 %}">{{ playlist.playlist_title }}</a></th>
 	      		    	<td></td>
