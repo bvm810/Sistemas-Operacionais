@@ -29,7 +29,10 @@ class PlaylistDeletionForm(forms.Form):
 		user = self.fields['username'].initial
 
 		if(User.objects.get(username = user).listener.playlists.filter(playlist_title = data).count()==0):
-			raise ValidationError('Playlist inexistente ou não pertence ao usuário')
+			raise ValidationError('Playlist inexistente ou não disponível ao usuário')
+
+		if(Playlist.objects.get(playlist_title = data).creator != User.objects.get(username = user)):
+			raise ValidationError('Usuário não é o criador dessa playlist. Utilizar remoção')
 
 		return data
 
@@ -56,9 +59,30 @@ class PlaylistSharingForm(forms.Form):
 		user = self.fields['original_user'].initial
 
 		if(User.objects.get(username = user).listener.playlists.filter(playlist_title = data).count()==0):
-			raise ValidationError('Playlist inexistente ou não pertence ao usuário')
+			raise ValidationError('Playlist inexistente ou não disponível ao usuário')
 
 		return data	
+
+class PlaylistRemovalForm(forms.Form):
+	playlist_name = forms.CharField(label = 'Nome', max_length = 200)
+	username = forms.CharField(max_length = 200, widget = forms.HiddenInput())
+
+	def __init__(self, *args, **kwargs):
+		self.request = kwargs.pop("request")
+		super(PlaylistRemovalForm, self).__init__(*args,**kwargs)
+		self.fields['username'].initial = self.request.user.username 
+
+	def clean_playlist_name(self):
+		data = self.cleaned_data['playlist_name']
+		user = self.fields['username'].initial
+
+		if(User.objects.get(username = user).listener.playlists.filter(playlist_title = data).count()==0):
+			raise ValidationError('Playlist inexistente ou não disponível ao usuário')
+
+		if(Playlist.objects.get(playlist_title = data).creator == User.objects.get(username = user)):
+			raise ValidationError('Usuário é o criador dessa playlist. Apague a playlist')
+
+		return data
 
 
 

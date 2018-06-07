@@ -9,7 +9,7 @@ from django.template import loader
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .models import Playlist, Musica, Listener
-from .forms import PlaylistCreationForm, PlaylistDeletionForm, PlaylistSharingForm
+from .forms import PlaylistCreationForm, PlaylistDeletionForm, PlaylistSharingForm, PlaylistRemovalForm
 
 COMMANDS_PLAYLIST_ID = 6
 ALL_SONGS_PLAYLIST_ID = 1
@@ -34,10 +34,12 @@ def home(request):
         creation_form = PlaylistCreationForm(request.POST)
         deletion_form = PlaylistDeletionForm(request = request)
         sharing_form = PlaylistSharingForm(request = request)
+        removal_form = PlaylistRemovalForm(request = request)
         if (creation_form.is_valid()):
             new_playlist = Playlist(
                 playlist_title = creation_form.cleaned_data['playlist_name'],
                 creation_date = timezone.now(),
+                creator = u
             )    
             new_playlist.save()
             u.listener.playlists.add(new_playlist)
@@ -46,6 +48,7 @@ def home(request):
         deletion_form = PlaylistDeletionForm(data = request.POST, request = request)
         creation_form = PlaylistCreationForm()
         sharing_form = PlaylistSharingForm(request = request)
+        removal_form = PlaylistRemovalForm(request = request)
         if (deletion_form.is_valid()):
             deleted_playlist = Playlist.objects.get(playlist_title = deletion_form.cleaned_data['playlist_name'])
             deleted_playlist.delete()
@@ -54,15 +57,26 @@ def home(request):
         deletion_form = PlaylistDeletionForm(request = request)
         creation_form = PlaylistCreationForm()
         sharing_form = PlaylistSharingForm(data = request.POST, request = request)
+        removal_form = PlaylistRemovalForm(request = request)
         if(sharing_form.is_valid()):
             shared_playlist = Playlist.objects.get(playlist_title = sharing_form.cleaned_data['playlist_name'])
             shared_user = User.objects.get(username = sharing_form.cleaned_data['shared_user'])
             shared_user.listener.playlists.add(shared_playlist)
-            sharing_form = PlaylistSharingForm(request = request)     
+            sharing_form = PlaylistSharingForm(request = request)
+    elif(request.method == 'POST' and 'remove' in request.POST):
+        deletion_form = PlaylistDeletionForm(request = request)
+        creation_form = PlaylistCreationForm()
+        sharing_form = PlaylistSharingForm(request = request)
+        removal_form = PlaylistRemovalForm(data = request.POST, request = request)
+        if(removal_form.is_valid()):
+            removed_playlist = Playlist.objects.get(playlist_title = removal_form.cleaned_data['playlist_name'])
+            u.listener.playlists.remove(removed_playlist)
+            removal_form = PlaylistRemovalForm(request = request)     
     else:
         creation_form = PlaylistCreationForm()
         deletion_form = PlaylistDeletionForm(request = request)
-        sharing_form = PlaylistSharingForm(request = request)            
+        sharing_form = PlaylistSharingForm(request = request)
+        removal_form = PlaylistRemovalForm(request = request)            
     template = loader.get_template('autofalante/home.html')
     context = {
         'owned_playlists': owned_playlists,
@@ -70,6 +84,7 @@ def home(request):
         'creation_form': creation_form,
         'deletion_form': deletion_form,
         'sharing_form': sharing_form,
+        'removal_form': removal_form,
     }
     return render(request,'autofalante/home.html',context)
 

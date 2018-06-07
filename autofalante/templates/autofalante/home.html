@@ -49,6 +49,11 @@
 	</form>
 	<form method="post">
   		{% csrf_token %}
+  		{{ removal_form }}
+  		<input style="margin-left:235px;" type="submit" name="remove" value="Remover Playlist"/>
+	</form>
+	<form method="post">
+  		{% csrf_token %}
   		{{ sharing_form }}
   		<input style="margin-left:5px;" type="submit" name="share" value="Compartilhar"/>
 	</form>

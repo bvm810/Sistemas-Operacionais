@@ -11,6 +11,7 @@ class Playlist(models.Model):
 	#de criação
 	playlist_title = models.CharField('nome', max_length = 200)
 	creation_date = models.DateTimeField('data de criação')
+	creator = models.ForeignKey(User, on_delete = models.CASCADE)
 	def __str__(self):
 		return self.playlist_title
 

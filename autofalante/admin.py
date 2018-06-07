@@ -21,13 +21,17 @@ class PlaylistAdmin(admin.ModelAdmin):
 	list_filter = ['creation_date']
 	search_fields = ['playlist_title']
 
+class PlaylistInline(admin.TabularInline):
+	model = Playlist
+	extra = 1
+
 class ListenerInline(admin.StackedInline):
 	model = Listener
 	can_delete = False
 	verbose_name_plural = 'ouvintes'
 
 class UserAdmin(BaseUserAdmin):
-	inlines = (ListenerInline, ) 
+	inlines = (ListenerInline, PlaylistInline, ) 
 
 
 admin.site.unregister(User)
