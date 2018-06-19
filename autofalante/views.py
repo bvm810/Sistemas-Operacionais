@@ -15,7 +15,7 @@ COMMANDS_PLAYLIST_ID = 6
 ALL_SONGS_PLAYLIST_ID = 1
 LOAD_ARDUINO_ID = 9992
 
-def index(request):
+def index(request): 
     songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)            
     template = loader.get_template('autofalante/index.html')
     context = {
@@ -26,7 +26,12 @@ def index(request):
 def home(request):
     if (request.user.is_authenticated):
         u = User.objects.get(username = request.user.username)
-        owned_playlists = u.listener.playlists.all().order_by('playlist_title')
+        if(not hasattr(u,'listener')):
+            owned_playlists = []
+            u.listener = Listener(user = u)
+            u.listener.save()
+        else:    
+            owned_playlists = u.listener.playlists.all().order_by('playlist_title')
     else:
         owned_playlists = []    
     songs = Musica.objects.filter(playlist = ALL_SONGS_PLAYLIST_ID)
@@ -90,7 +95,7 @@ def home(request):
 
 def detail(request, playlist_id, load):
     playlist = Playlist.objects.get(id = playlist_id)
-    musicas_playlist = playlist.musica_set.all()
+    musicas_playlist = playlist.musica_set.order_by('creation_date')
     fila = Musica.objects.all()
     if (load and musicas_playlist):
         song = musicas_playlist[0]
@@ -161,6 +166,7 @@ def addSongPlaylist(request, playlist_id, musica_arduino_id):
         execute = 0,
         in_line = 0,
         modified_at = added_song.modified_at,
+        creation_date = timezone.now(),
         arduino_id = added_song.arduino_id,
         song_title = added_song.song_title,
         song_interpret = added_song.song_interpret,

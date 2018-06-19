@@ -23,6 +23,7 @@ class Musica(models.Model):
 	execute = models.BooleanField('Execução foi pedida', editable = True)
 	in_line = models.BooleanField('Na fila de execução', editable = True)
 	modified_at = models.DateTimeField('data de modificação', auto_now = True)
+	creation_date = models.DateTimeField('data de criação', default = timezone.now())
 	arduino_id = models.IntegerField('ID no Arduino')
 	song_title = models.CharField('título', max_length = 200)
 	song_interpret = models.CharField('intérprete', max_length = 200)
