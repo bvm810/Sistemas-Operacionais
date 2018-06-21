@@ -16,6 +16,10 @@ Para o ESP e o DFPlayer, as bibliotecas indicadas foram usadas para comunicaçã
 # O que foi desenvolvido pelo grupo
 Todo o back-end e front-end do site, junto com a administração do banco de dados para criação e administração das playlists. O esquema para busca das músicas a serem tocadas no servidor, o gerenciamento da fila de comandos e da fila de músicas a serem tocadas. O algoritmo para colocar as playlists em execução, a comunicação ESP-DFPlayer e por fim a construção de uma caixa de som e de um circuito ligando a saída do DFPlayer a um amplificador e a ligação desse amplificador com o alto-falante.
 
+# Arquitetura
+![alt text](https://github.com/bvm810/Sistemas-Operacionais/blob/master/Arquitetura.PNG)  
+O usuário faz os pedidos ao servidor, e em seguida o módulo Wi-fi busca esses pedidos e os repassa ao DFP de modo a tocar as músicas na caixa de som. Os arquivos .mp3 ficam armazenados em um SD Card inserido dentro do DFP e por isso não foram representados.
+
 # Descrição Técnica
 Através do framework Django, foi criado um site para o acesso do usuário ao sistema de gerenciamento da caixa de som. O Django é responsável por renderizar as páginas e formulários HTMLs criados usando alguns parâmetros presentes na URL acessada (arquivo views.py). Devido a isso, é possível, ao renderizar páginas específicas, fazer alterações no banco de dados (cujos modelos estão em models.py), com a criação, deleção e compartilhamento de playlists e também enviar músicas para a fila de execução ou diretamente para a fila de comandos (música sendo executada imediatamente).    
 Essas duas filas são criadas colocando o código numérico previamente atribuído de todas as músicas que tiverem sido selecionadas (flags in_line e executing do BD) em uma outra página web, que é acessada pelo ESP usando a biblioteca "esp8266.h" usando GET. Tendo os códigos das músicas em mãos, o ESP manda os comandos correspondentes aos códigos para o módulo DFPlayer usando a biblioteca "DFRobotDFPlayerMini.h" e por fim o módulo MP3 executa os comandos pedidos.    
