@@ -6,8 +6,8 @@ Para usuários não cadastrados a única funcionalidade é colocar músicas na f
 # Dependências 
 Python 3.6  
 Django 2.0  
-Módulo Wi-fi ESP8266 e biblioteca esp8266.h 
-Módulo DFPlayer Mini e biblioteca DFRobotDFPlayerMini.h 
+Módulo Wi-fi ESP8266 e biblioteca esp8266.h   
+Módulo DFPlayer Mini e biblioteca DFRobotDFPlayerMini.h   
 
 # O que foi usado pelo grupo
 O framework Django para desenvolvimento web e todos os arquivos padrão instalados nele, incluindo as interfaces para renderização de páginas HTML, o SGBD SQLite3, a interface para geração de formulários em HTML e o mapeamento de URLs, além das aplicações já prontas auth e admin para autenticação e lado admin do website, respectivamente.  
